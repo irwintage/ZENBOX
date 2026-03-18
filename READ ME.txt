@@ -1,0 +1,105 @@
+Zenbox
+
+Chrysasynth
+Standalone Edition
+
+Thank you for downloading this tool.
+
+Zenbox is a breathing and focus instrument
+from the Chrysasynth lab.
+
+It guides slow breathing cycles while generating
+immersive sound textures such as brown noise
+and gentle binaural tones.
+
+Designed for calm, focus, and meditation.
+
+HOW TO USE
+
+Extract the folder
+
+Open "index.html" in your browser
+
+Click "Start" to begin the breathing session
+
+Follow the expanding and contracting circle
+
+Adjust sound and volume as desired
+
+Use the session timer for timed breathing sessions.
+
+CONTROLS
+
+Start
+Begins the breathing cycle
+
+Stop
+Ends the session
+
+Sound
+Toggles the audio environment
+
+Volume
+Controls the overall sound level
+
+PATTERNS
+
+Box
+Balanced breathing cycle (4·4·4·4)
+
+Relax
+Extended exhale pattern (4·7·8)
+
+Focus
+Steady rhythmic breathing (5·5·5·5)
+
+Calm
+Slow grounding breath cycle (6·2·7·2)
+
+Each pattern uses a different breathing rhythm
+to support relaxation or concentration.
+
+SOUND
+
+Brown Noise
+Deep calming ambient noise
+
+Alpha
+Light binaural tone around 10 Hz
+for relaxed awareness
+
+Theta
+Slower binaural tone around 6 Hz
+for deeper meditative states
+
+SESSION TIMER
+
+Choose a duration for the breathing session
+or leave it on infinite mode.
+
+The session will stop automatically
+when the timer completes.
+
+COMPATIBILITY
+
+Works in modern browsers
+
+Chrome
+Edge
+Safari
+Firefox
+
+Desktop and mobile supported.
+
+Note
+Audio starts after user interaction
+due to browser audio policies.
+
+CHRYSASYNTH
+
+Chrysasynth is a collection of experimental sound tools
+and generative audio instruments.
+
+Explore more tools
+
+https://chrysasynth.com

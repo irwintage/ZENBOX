@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Zenbox — Chrysasynth Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#100E1A"/>
+  <link rel="manifest" href="manifest.json"/>
+  <style>
+    @font-face { font-family:'Cinzel'; src:url('fonts/cinzel-v26-latin-regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+    @font-face { font-family:'Cinzel'; src:url('fonts/cinzel-v26-latin-500.woff2') format('woff2'); font-weight:500; font-display:swap; }
+    @font-face { font-family:'Inter';  src:url('fonts/inter-v20-latin-300.woff2') format('woff2'); font-weight:300; font-display:swap; }
+    @font-face { font-family:'Inter';  src:url('fonts/inter-v20-latin-regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+    @font-face { font-family:'Inter';  src:url('fonts/inter-v20-latin-500.woff2') format('woff2'); font-weight:500; font-display:swap; }
+
+    :root {
+      --a1:#78F0FF; --a2:#C38CFF;
+      --surf:#100E1A; --panel:rgba(16,14,26,0.88);
+      --stroke:rgba(255,255,255,0.08);
+      --t1:#F1F7FF; --t2:#B5C2D9; --t3:rgba(181,194,217,0.42);
+      --fd:'Cinzel',serif; --fb:'Inter',system-ui,sans-serif;
+      --r:10px; --rl:14px; --rp:999px;
+      --fast:80ms; --mid:140ms;
+      --pc1:#78F0FF; --pc2:#C38CFF; --pg:rgba(120,240,255,0.22);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-text-size-adjust:100%}
+    body{font-family:var(--fb);background:var(--surf);color:var(--t1);min-height:100dvh;-webkit-tap-highlight-color:transparent}
+
+   .shell{
+  width:100%;
+  max-width:500px;
+  margin:0 auto;
+  padding:clamp(36px,8vh,80px) 14px 28px;
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+
+    .card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--rl);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+
+    /* HEADER */
+    .hdr{padding:13px 15px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:9px}
+    .bdot{width:8px;height:8px;border-radius:50%;background:var(--a1);box-shadow:0 0 7px var(--a1)}
+    .bdot.on{animation:dp 1.6s ease-in-out infinite}
+    @keyframes dp{0%,100%{transform:scale(1);box-shadow:0 0 6px var(--pc1)}50%{transform:scale(1.3);box-shadow:0 0 14px var(--pc1)}}
+    .btitle{font-family:var(--fd);font-size:.90rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase}
+    .hchips{display:flex;gap:7px}
+    .mc{font-size:.65rem;padding:4px 9px;border-radius:var(--rp);background:rgba(255,255,255,0.06);border:1px solid var(--stroke);color:var(--t2);white-space:nowrap}
+    .mc.live{color:var(--pc1);border-color:var(--pc1)}
+
+    /* STAGE */
+    .stage{padding:24px 15px 20px;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden}
+    .stage::before{content:"";position:absolute;top:-20%;left:-5%;width:110%;height:70%;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,var(--pg),transparent 65%);transition:background 1s ease;z-index:0}
+
+    /* ZEN CIRCLE */
+    .zen-circle {
+      position: relative; z-index: 1;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.04), transparent 55%),
+        radial-gradient(circle at center, rgba(14,12,24,1) 0%, rgba(8,6,16,1) 100%);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.07),
+        0 14px 36px rgba(0,0,0,0.85);
+      transition:
+        transform 0.8s cubic-bezier(0.4,0,0.2,1),
+        box-shadow 0.8s ease;
+    }
+
+    /* ring lumineux autour du cercle */
+    .zc-ring {
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: linear-gradient(var(--surf), var(--surf)) padding-box,
+                  linear-gradient(135deg, var(--pc1), var(--pc2)) border-box;
+      transition: opacity 0.6s ease;
+      opacity: 0.5;
+    }
+
+    /* états par phase */
+    .zen-circle.inhale {
+      transform: scale(1.12);
+      box-shadow:
+        0 0 0 1px rgba(120,240,255,0.30),
+        0 0 50px rgba(120,240,255,0.18),
+        0 18px 45px rgba(0,0,0,0.85);
+    }
+    .zen-circle.inhale .zc-ring { opacity: 1; }
+
+    .zen-circle.hold {
+      transform: scale(1.06);
+      box-shadow:
+        0 0 0 1px rgba(195,140,255,0.28),
+        0 0 35px rgba(195,140,255,0.15),
+        0 16px 40px rgba(0,0,0,0.85);
+    }
+    .zen-circle.hold .zc-ring { opacity: 0.8; }
+
+    .zen-circle.exhale {
+      transform: scale(0.88);
+      box-shadow:
+        0 0 0 1px rgba(134,232,156,0.22),
+        0 0 28px rgba(134,232,156,0.12),
+        0 10px 28px rgba(0,0,0,0.85);
+    }
+    .zen-circle.exhale .zc-ring { opacity: 0.4; }
+
+    .zen-circle.idle {
+      animation: zenIdle 4.5s ease-in-out infinite;
+    }
+    @keyframes zenIdle {
+      0%,100% { transform:scale(1.0);   box-shadow:0 0 0 1px rgba(255,255,255,0.07),0 14px 36px rgba(0,0,0,0.85); }
+      50%     { transform:scale(1.03);  box-shadow:0 0 0 1px rgba(120,240,255,0.14),0 0 24px rgba(120,240,255,0.08),0 16px 40px rgba(0,0,0,0.85); }
+    }
+
+    .zc-center {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 5px; text-align: center;
+      position: relative; z-index: 1;
+    }
+
+    .zc-label {
+      font-size: .56rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--t3);
+    }
+
+    .zc-count {
+      font-size: 1.55rem; font-weight: 300;
+      color: var(--pc1); font-variant-numeric: tabular-nums;
+      line-height: 1; transition: color var(--mid);
+    }
+
+    .zc-phase {
+      font-family: var(--fd); font-size: .62rem;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--t1);
+    }
+
+    /* SECTION */
+    .sec{padding:11px 15px;display:flex;flex-direction:column;gap:9px}
+    .slbl{font-size:.57rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+    .div{height:1px;background:var(--stroke);margin:0 15px}
+
+    /* CHIPS */
+    .crow{display:flex;flex-wrap:wrap;gap:5px}
+    .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:var(--rp);border:1px solid var(--stroke);background:rgba(255,255,255,0.04);font-size:.70rem;color:var(--t2);cursor:pointer;user-select:none;transition:background var(--fast),border-color var(--fast),color var(--fast),transform var(--fast)}
+    .chip:hover{background:rgba(255,255,255,0.08);transform:translateY(-1px)}
+    .chip.on{border-color:var(--a1);color:var(--t1);background:rgba(120,240,255,0.08);box-shadow:0 0 9px rgba(120,240,255,0.16)}
+    .tchip{display:inline-flex;align-items:center;padding:5px 11px;border-radius:var(--rp);border:1px solid var(--stroke);background:rgba(255,255,255,0.04);font-size:.70rem;color:var(--t2);cursor:pointer;user-select:none;transition:background var(--fast),border-color var(--fast),color var(--fast)}
+    .tchip:hover{background:rgba(255,255,255,0.08)}
+    .tchip.on{border-color:var(--a2);color:var(--a2);background:rgba(195,140,255,0.08)}
+
+    /* VOL */
+    .vrow{display:flex;align-items:center;gap:10px}
+    .vlbl{font-size:.62rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);white-space:nowrap}
+    .vval{font-size:.68rem;font-weight:500;color:var(--a1);min-width:30px;text-align:right;font-variant-numeric:tabular-nums}
+    .swrap{flex:1;position:relative;height:20px;display:flex;align-items:center}
+    .str{position:absolute;left:0;right:0;height:3px;border-radius:999px;background:rgba(255,255,255,0.10);pointer-events:none}
+    .sfill{position:absolute;left:0;height:3px;border-radius:999px;background:linear-gradient(to right,var(--a1),var(--a2));pointer-events:none;transition:width 16ms linear}
+    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;outline:none;cursor:pointer;position:relative;z-index:1}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--a1);box-shadow:0 0 0 3px rgba(16,14,26,1),0 0 0 4px var(--a1),0 0 10px rgba(120,240,255,0.3)}
+    input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--a1);border:3px solid var(--surf)}
+
+    /* ACTIONS */
+    .acts{padding:0 15px 15px;display:flex;gap:9px;flex-wrap:wrap}
+    .btn{height:40px;padding:0 18px;border-radius:var(--r);border:1px solid var(--stroke);background:rgba(255,255,255,0.05);color:var(--t1);font-family:var(--fb);font-size:.82rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background var(--fast),transform var(--fast),box-shadow var(--fast)}
+    .btn:hover{background:rgba(255,255,255,0.09);transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn:disabled{opacity:.4;pointer-events:none}
+    .btn-p{background:linear-gradient(135deg,var(--pc1),var(--pc2));border-color:transparent;color:#060A10;font-weight:600;box-shadow:0 4px 16px var(--pg);transition:filter var(--fast),transform var(--fast),box-shadow var(--mid),background var(--mid)}
+    .btn-p:hover{filter:brightness(1.07);box-shadow:0 6px 22px var(--pg);transform:translateY(-1px)}
+    .btn-g{background:transparent;border-color:var(--stroke);color:var(--t2);font-size:.78rem;padding:0 13px}
+    .btn-g:hover{border-color:rgba(255,255,255,0.16);color:var(--t1)}
+    .btn-g.son{border-color:var(--a2);color:var(--a2);background:rgba(195,140,255,0.07)}
+
+    @media(max-width:400px){.btn-p{flex:1;justify-content:center}.shell{padding:13px 11px 22px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="card hdr">
+    <div class="brand">
+      <div class="bdot" id="bdot"></div>
+      <span class="btitle">Zenbox</span>
+    </div>
+    <div class="hchips">
+      <span class="mc" id="patChip">Box · 4s</span>
+      <span class="mc" id="timChip">∞</span>
+    </div>
+  </div>
+
+  <div class="card stage">
+    <div class="zen-circle" id="zenCircle">
+        <div class="zc-ring"></div>
+        <div class="zc-center">
+          <div class="zc-label">breathe</div>
+          <div class="zc-count" id="sqCount">—</div>
+          <div class="zc-phase" id="sqPhase">Ready</div>
+        </div>
+      </div>
+  </div>
+
+  <div class="card">
+    <div class="sec">
+      <div class="slbl">Pattern</div>
+      <div class="crow" id="patRow">
+        <div class="chip on"  data-p="box">Box 4·4·4·4</div>
+        <div class="chip"     data-p="relax">Relax 4·7·8·0</div>
+        <div class="chip"     data-p="focus">Focus 5·5·5·5</div>
+        <div class="chip"     data-p="calm">Calm 6·2·7·2</div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="sec">
+      <div class="slbl">Sound</div>
+      <div class="crow" id="sndRow">
+        <div class="chip on" data-s="brown">Brown Noise</div>
+        <div class="chip"    data-s="alpha">Alpha · 10 Hz</div>
+        <div class="chip"    data-s="theta">Theta · 6 Hz</div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="sec">
+      <div class="slbl">Session Timer</div>
+      <div class="crow" id="timRow">
+        <div class="tchip on" data-v="0">∞</div>
+        <div class="tchip"    data-v="60">1 min</div>
+        <div class="tchip"    data-v="180">3 min</div>
+        <div class="tchip"    data-v="300">5 min</div>
+        <div class="tchip"    data-v="600">10 min</div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="sec">
+      <div class="vrow">
+        <span class="vlbl">Volume</span>
+        <div class="swrap">
+          <div class="str"></div>
+          <div class="sfill" id="vfill"></div>
+          <input type="range" id="vol" min="0" max="1" step="0.01" value="0.25"/>
+        </div>
+        <span class="vval" id="vval">25%</span>
+      </div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-p" id="startBtn">▶ Start</button>
+      <button class="btn"       id="stopBtn"  disabled>■ Stop</button>
+      <button class="btn btn-g" id="sndBtn">♪ Sound</button>
+    </div>
+  </div>
+
+</div>
+<script>
+// ── PATTERNS ─────────────────────────────────────────────────────────────
+const PATS = {
+  box:   { label:"Box · 4s",      names:["Inhale","Hold","Exhale","Hold"], durs:[4,4,4,4]   },
+  relax: { label:"Relax · 4·7·8", names:["Inhale","Hold","Exhale","Hold"], durs:[4,7,8,0]   },
+  focus: { label:"Focus · 5s",    names:["Inhale","Hold","Exhale","Hold"], durs:[5,5,5,5]   },
+  calm:  { label:"Calm · 6s",     names:["Inhale","Hold","Exhale","Hold"], durs:[6,2,7,2]   },
+};
+
+const PHASE_C = {
+  Inhale: { c1:"#78F0FF", c2:"#C38CFF", g:"rgba(120,240,255,0.25)" },
+  Hold:   { c1:"#C38CFF", c2:"#9B6FFF", g:"rgba(195,140,255,0.20)" },
+  Exhale: { c1:"#86E89C", c2:"#2DBB85", g:"rgba(134,232,156,0.20)" },
+};
+
+// Circle refs
+const zenCircle = document.getElementById("zenCircle");
+
+// ── DOM ───────────────────────────────────────────────────────────────────
+const bdot     = document.getElementById("bdot");
+const patChip  = document.getElementById("patChip");
+const timChip  = document.getElementById("timChip");
+const sqCount  = document.getElementById("sqCount");
+const sqPhase  = document.getElementById("sqPhase");
+const startBtn = document.getElementById("startBtn");
+const stopBtn  = document.getElementById("stopBtn");
+const sndBtn   = document.getElementById("sndBtn");
+const volEl    = document.getElementById("vol");
+const vval     = document.getElementById("vval");
+const vfill    = document.getElementById("vfill");
+const rs       = document.documentElement.style;
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let curPat  = "box";
+let curSnd  = "brown";
+let timerSec = 0;
+let audioOn  = false;
+let running  = false;
+let phaseIdx = 0;
+let phaseTO  = null;
+let countTO  = null;
+let sessTO   = null;
+
+// ── THEME ─────────────────────────────────────────────────────────────────
+function setTheme(phaseName) {
+  const t = PHASE_C[phaseName] || PHASE_C.Hold;
+  rs.setProperty("--pc1", t.c1);
+  rs.setProperty("--pc2", t.c2);
+  rs.setProperty("--pg",  t.g);
+  sqCount.style.color = t.c1;
+  zenCircle.classList.remove("inhale","hold","exhale","idle");
+  if      (phaseName === "Inhale") zenCircle.classList.add("inhale");
+  else if (phaseName === "Exhale") zenCircle.classList.add("exhale");
+  else                              zenCircle.classList.add("hold");
+}
+
+// ── CIRCLE ANIMATION ─────────────────────────────────────────────────────
+function resetSquare() {
+  zenCircle.classList.remove("inhale","hold","exhale");
+  zenCircle.classList.add("idle");
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────────────────────────
+function startCount(sec) {
+  clearInterval(countTO);
+  let v = Math.ceil(sec);
+  sqCount.textContent = v;
+  if (v <= 0) { sqCount.textContent = "—"; return; }
+  countTO = setInterval(() => {
+    v--;
+    sqCount.textContent = v > 0 ? v : 0;
+    if (v <= 0) clearInterval(countTO);
+  }, 1000);
+}
+
+// ── PHASE CYCLE ───────────────────────────────────────────────────────────
+function runPhase() {
+  if (!running) return;
+  const pat  = PATS[curPat];
+  const idx  = phaseIdx % pat.names.length;
+  const name = pat.names[idx];
+  const dur  = pat.durs[idx];
+
+  // Skip phases with dur=0 (e.g. Relax has no final hold)
+  if (dur === 0) {
+    phaseIdx = (phaseIdx + 1) % pat.names.length;
+    runPhase();
+    return;
+  }
+
+  sqPhase.textContent = name;
+  setTheme(name);
+  startCount(dur);
+
+  phaseTO = setTimeout(() => {
+    phaseIdx = (phaseIdx + 1) % pat.names.length;
+    runPhase();
+  }, dur * 1000);
+}
+
+// ── SESSION ───────────────────────────────────────────────────────────────
+function startSess() {
+  running  = true;
+  phaseIdx = 0;
+  startBtn.disabled = true;
+  stopBtn.disabled  = false;
+  bdot.classList.add("on");
+  patChip.classList.add("live");
+  resetSquare();
+  runPhase();
+
+  clearTimeout(sessTO);
+  if (timerSec > 0) {
+    timChip.textContent = Math.round(timerSec/60)+" min";
+    sessTO = setTimeout(() => stopSess(true), timerSec*1000);
+  }
+}
+
+function stopSess(fromTimer) {
+  running = false;
+  clearTimeout(phaseTO); clearTimeout(sessTO); clearInterval(countTO);
+  startBtn.disabled = false;
+  stopBtn.disabled  = true;
+  bdot.classList.remove("on");
+  patChip.classList.remove("live");
+  sqPhase.textContent = fromTimer ? "Done" : "Pause";
+  sqCount.textContent = "—";
+  resetSquare();
+  if (audioOn) fadeGain(0, 0.4);
+}
+
+// ── AUDIO ─────────────────────────────────────────────────────────────────
+let actx, mGain, filt, brownSrc, brownG, toneL, toneR, toneG, panL, panR;
+
+function initAudio() {
+  if (actx) return;
+  actx  = new (window.AudioContext || window.webkitAudioContext)();
+  mGain = actx.createGain(); mGain.gain.value = 0;
+  filt  = actx.createBiquadFilter(); filt.type = "lowpass"; filt.frequency.value = 900; filt.Q.value = 0.9;
+
+  const mix = actx.createGain(); mix.gain.value = 1;
+
+  // Brown noise
+  const len = actx.sampleRate * 8;
+  const buf = actx.createBuffer(1, len, actx.sampleRate);
+  const d   = buf.getChannelData(0);
+  let last  = 0;
+  for (let i = 0; i < len; i++) { const w = Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.5; }
+  brownSrc = actx.createBufferSource(); brownSrc.buffer = buf; brownSrc.loop = true;
+  brownG = actx.createGain(); brownG.gain.value = 0;
+  brownSrc.connect(brownG); brownG.connect(mix);
+
+  // Binaural
+  toneL = actx.createOscillator(); toneL.type = "sine";
+  toneR = actx.createOscillator(); toneR.type = "sine";
+  panL  = actx.createStereoPanner(); panL.pan.value = -0.85;
+  panR  = actx.createStereoPanner(); panR.pan.value =  0.85;
+  toneG = actx.createGain(); toneG.gain.value = 0;
+  toneL.connect(panL).connect(toneG);
+  toneR.connect(panR).connect(toneG);
+  toneG.connect(mix);
+
+  mix.connect(filt); filt.connect(mGain); mGain.connect(actx.destination);
+  brownSrc.start(); toneL.start(); toneR.start();
+  applySound();
+}
+
+function applySound() {
+  if (!actx) return;
+  const now = actx.currentTime, t = 0.5;
+  brownG.gain.setTargetAtTime(0, now, 0.05);
+  toneG.gain.setTargetAtTime(0, now, 0.05);
+  if (curSnd === "brown") {
+    brownG.gain.setTargetAtTime(0.38, now+0.05, t);
+    filt.frequency.setTargetAtTime(850, now, t);
+  } else if (curSnd === "alpha") {
+    toneL.frequency.setTargetAtTime(180, now, t);
+    toneR.frequency.setTargetAtTime(190, now, t);
+    toneG.gain.setTargetAtTime(0.22, now+0.05, t);
+    brownG.gain.setTargetAtTime(0.12, now+0.05, t);
+    filt.frequency.setTargetAtTime(1100, now, t);
+  } else {
+    toneL.frequency.setTargetAtTime(180, now, t);
+    toneR.frequency.setTargetAtTime(186, now, t);
+    toneG.gain.setTargetAtTime(0.20, now+0.05, t);
+    brownG.gain.setTargetAtTime(0.15, now+0.05, t);
+    filt.frequency.setTargetAtTime(1000, now, t);
+  }
+}
+
+function fadeGain(target, dur) {
+  if (!actx || !mGain) return;
+  const now = actx.currentTime;
+  mGain.gain.cancelScheduledValues(now);
+  mGain.gain.setValueAtTime(mGain.gain.value, now);
+  mGain.gain.linearRampToValueAtTime(target, now + dur);
+}
+
+// ── VOL FILL ──────────────────────────────────────────────────────────────
+function updateFill() {
+  const pct = (volEl.value - volEl.min) / (volEl.max - volEl.min) * 100;
+  vfill.style.width = pct + "%";
+}
+
+// ── EVENTS ────────────────────────────────────────────────────────────────
+startBtn.addEventListener("click", async () => {
+  initAudio();
+  if (actx.state === "suspended") await actx.resume();
+  if (audioOn) fadeGain(parseFloat(volEl.value), 0.18);
+  startSess();
+});
+
+stopBtn.addEventListener("click", () => stopSess(false));
+
+sndBtn.addEventListener("click", async () => {
+  initAudio();
+  if (actx.state === "suspended") await actx.resume();
+  audioOn = !audioOn;
+  sndBtn.classList.toggle("son", audioOn);
+  sndBtn.textContent = audioOn ? "♪ On" : "♪ Sound";
+  fadeGain(audioOn ? parseFloat(volEl.value) : 0, 0.18);
+  if (audioOn) applySound();
+});
+
+volEl.addEventListener("input", () => {
+  const v = parseFloat(volEl.value);
+  vval.textContent = Math.round(v*100)+"%";
+  updateFill();
+  if (actx && audioOn) fadeGain(v, 0.06);
+});
+
+// Pattern chips
+document.querySelectorAll("#patRow .chip").forEach(c => {
+  c.addEventListener("click", () => {
+    if (running) return;
+    document.querySelectorAll("#patRow .chip").forEach(x => x.classList.remove("on"));
+    c.classList.add("on");
+    curPat = c.dataset.p;
+    patChip.textContent = PATS[curPat].label;
+  });
+});
+
+// Sound chips
+document.querySelectorAll("#sndRow .chip").forEach(c => {
+  c.addEventListener("click", () => {
+    document.querySelectorAll("#sndRow .chip").forEach(x => x.classList.remove("on"));
+    c.classList.add("on");
+    curSnd = c.dataset.s;
+    if (actx) applySound();
+  });
+});
+
+// Timer chips
+document.querySelectorAll("#timRow .tchip").forEach(c => {
+  c.addEventListener("click", () => {
+    document.querySelectorAll("#timRow .tchip").forEach(x => x.classList.remove("on"));
+    c.classList.add("on");
+    timerSec = parseInt(c.dataset.v, 10);
+    timChip.textContent = timerSec > 0 ? Math.round(timerSec/60)+" min" : "∞";
+  });
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+updateFill();
+vval.textContent = Math.round(parseFloat(volEl.value)*100)+"%";
+// Init circle idle
+zenCircle.classList.add("idle");
+
+// Auto-height
+function rH() {
+  const h = document.documentElement.scrollHeight;
+  try { window.parent.postMessage({type:"setHeight",height:h},"*"); } catch(e){}
+}
+window.addEventListener("load", rH);
+if (window.ResizeObserver) new ResizeObserver(rH).observe(document.documentElement);
+else window.addEventListener("resize", rH);
+</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./service-worker.js");</script>
+</body>
+</html>
