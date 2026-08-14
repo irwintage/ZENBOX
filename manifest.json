@@ -3,8 +3,8 @@
   "short_name": "Zenbox",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#100E1A",
-  "theme_color": "#100E1A",
+  "background_color": "#0d0f12",
+  "theme_color": "#0d0f12",
   "orientation": "portrait",
   "icons": [
     {
