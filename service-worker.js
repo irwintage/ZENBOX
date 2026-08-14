@@ -1,4 +1,4 @@
-const CACHE_NAME = "zenbox-cache-v2";
+const CACHE_NAME = "brth4-cache-v1";
 
 const ASSETS = [
   "./",
@@ -64,7 +64,7 @@ self.addEventListener("fetch", event => {
           caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, clone).catch(error => {
               console.warn(
-                "[Zenbox SW] Cache put failed:",
+                "[BRTH4 SW] Cache put failed:",
                 event.request.url,
                 error
               );
