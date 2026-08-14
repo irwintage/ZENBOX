@@ -4,7 +4,8 @@
   <meta charset="UTF-8"/>
   <title>Zenbox — Chrysasynth Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#100E1A"/>
+  <meta name="theme-color" content="#0d0f12"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
   <link rel="manifest" href="manifest.json"/>
   <style>
     @font-face { font-family:'Cinzel'; src:url('fonts/cinzel-v26-latin-regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
@@ -181,7 +182,149 @@
     .btn-g.son{border-color:var(--a2);color:var(--a2);background:rgba(195,140,255,0.07)}
 
     @media(max-width:400px){.btn-p{flex:1;justify-content:center}.shell{padding:13px 11px 22px}}
-  </style>
+  
+/* ================= ZENBOX V2 ================= */
+:root{
+  --a1:#54D9FF; --a2:#8B5CFF;
+  --surf:#0d0f12; --panel:transparent;
+  --stroke:rgba(255,255,255,.075);
+  --t1:#F4F6FB; --t2:rgba(244,246,251,.72); --t3:rgba(244,246,251,.42);
+  --pc1:#54D9FF; --pc2:#7A72FF; --pg:rgba(84,217,255,.22);
+}
+html{min-height:100%;background:#0d0f12;overscroll-behavior:none;color-scheme:dark}
+body{
+  min-height:100vh;min-height:100dvh;background:#0d0f12;overflow-x:hidden;overscroll-behavior:none;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 24%,color-mix(in srgb,var(--pc1) 10%,transparent),transparent 30%),
+    radial-gradient(circle at 60% 40%,color-mix(in srgb,var(--pc2) 8%,transparent),transparent 28%),
+    linear-gradient(180deg,#111318 0%,#0d0f12 50%,#090a0d 100%);
+  transition:background .7s ease;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.035),transparent 38%);
+}
+.shell{
+  width:min(100%,460px);max-width:460px;min-height:100vh;min-height:100dvh;margin:0 auto;
+  padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));
+  gap:11px;
+}
+.card{background:transparent;border:0;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+.hdr{padding:0;align-items:center}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.bdot{display:none}
+.btitle{font-size:1.32rem;letter-spacing:.02em;text-transform:none}
+.brand::before{
+  content:"CHRYSASYNTH";font-family:var(--fb);font-size:.58rem;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--t3)
+}
+.hchips{flex-direction:column;align-items:flex-end;gap:4px}
+.mc{
+  min-height:24px;padding:0 8px;display:inline-flex;align-items:center;font-size:.56rem;
+  background:rgba(255,255,255,.028);border-color:var(--stroke)
+}
+.mc.live{
+  color:var(--pc1);border-color:color-mix(in srgb,var(--pc1) 28%,transparent);
+  background:color-mix(in srgb,var(--pc1) 6%,rgba(255,255,255,.025))
+}
+
+.stage{
+  min-height:290px;padding:0;overflow:visible;display:grid;place-items:center;
+}
+.stage::before{
+  top:50%;left:50%;width:330px;height:330px;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,var(--pg),transparent 66%);filter:blur(28px);opacity:.75
+}
+.zen-circle{
+  width:176px;height:176px;
+  background:
+    radial-gradient(circle at 30% 22%,rgba(255,255,255,.08),transparent 28%),
+    radial-gradient(circle at 36% 72%,color-mix(in srgb,var(--pc1) 25%,transparent),transparent 34%),
+    radial-gradient(circle at 70% 24%,color-mix(in srgb,var(--pc2) 26%,transparent),transparent 35%),
+    radial-gradient(circle at center,#15171c 0%,#08090b 74%);
+  border:1px solid rgba(255,255,255,.075);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -26px 42px rgba(0,0,0,.48),
+             0 20px 46px rgba(0,0,0,.40),0 0 42px var(--pg);
+}
+.zc-ring{
+  inset:-34px;border:0;background:none;opacity:1;pointer-events:none;
+}
+.zc-ring::before,.zc-ring::after{
+  content:"";position:absolute;inset:0;border-radius:50%;border:2px solid transparent;
+  background:linear-gradient(#0d0f12,#0d0f12) padding-box,
+    conic-gradient(from 8deg,transparent 0 7%,var(--pc2) 8% 39%,transparent 40% 54%,
+    var(--pc1) 55% 86%,transparent 87% 100%) border-box;
+  filter:drop-shadow(0 0 8px var(--pg));
+  transition:transform .8s ease,opacity .5s ease;
+}
+.zc-ring::after{inset:12px;opacity:.18;transform:rotate(11deg)}
+.zen-circle.inhale{transform:scale(1.14)}
+.zen-circle.hold{transform:scale(1.06)}
+.zen-circle.exhale{transform:scale(.88)}
+.zen-circle.inhale .zc-ring::before{transform:scale(1.08) rotate(4deg)}
+.zen-circle.hold .zc-ring::before{transform:scale(1.02)}
+.zen-circle.exhale .zc-ring::before{transform:scale(.92) rotate(-4deg);opacity:.6}
+.zen-circle.exhale{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 12px 34px rgba(0,0,0,.42),0 0 34px var(--pg)
+}
+.zc-label{font-size:.51rem}.zc-count{font-size:1.75rem}.zc-phase{font-size:.60rem}
+
+.shell>.card:last-of-type{
+  display:flex;flex-direction:column;gap:9px;padding:11px 12px;border-radius:18px;
+  border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.022)
+}
+.sec{padding:0;gap:6px}.div{display:none}.slbl{font-size:.56rem}
+.crow{gap:5px}
+.chip,.tchip{
+  min-height:29px;padding:0 9px;font-size:.58rem;background:rgba(255,255,255,.028);
+  border-color:rgba(255,255,255,.07)
+}
+.chip.on{
+  border-color:color-mix(in srgb,var(--pc1) 42%,transparent);
+  background:color-mix(in srgb,var(--pc1) 6%,rgba(255,255,255,.025));
+  box-shadow:0 0 14px var(--pg)
+}
+.tchip.on{
+  color:color-mix(in srgb,var(--pc2) 76%,white);
+  border-color:color-mix(in srgb,var(--pc2) 40%,transparent);
+  background:color-mix(in srgb,var(--pc2) 6%,rgba(255,255,255,.025))
+}
+.vrow{gap:9px}.vlbl{font-size:.58rem}.vval{font-size:.61rem;color:var(--pc1)}
+.swrap,input[type=range]{height:17px}
+input[type=range]::-webkit-slider-thumb{
+  width:16px;height:16px;background:#eef3f7;box-shadow:0 0 0 3px #17191d,0 0 0 4px rgba(255,255,255,.08),0 0 12px var(--pg)
+}
+.acts{padding:0;display:grid;grid-template-columns:1fr auto;gap:8px}
+.btn{height:auto;min-height:42px;border-radius:14px;font-size:.67rem;justify-content:center}
+.btn-p{
+  background:color-mix(in srgb,var(--pc1) 7%,rgba(255,255,255,.025));
+  border-color:color-mix(in srgb,var(--pc1) 24%,transparent);color:#e8faff;box-shadow:none
+}
+.btn-g{min-width:92px;padding:0 12px}
+#stopBtn{display:none}
+
+@media(max-width:380px){
+  .shell{padding-left:12px;padding-right:12px;gap:9px}
+  .stage{min-height:252px}
+  .zen-circle{width:158px;height:158px}
+  .zc-ring{inset:-30px}
+  .shell>.card:last-of-type{padding:10px;gap:8px}
+  .chip,.tchip{font-size:.54rem;padding:0 8px}
+}
+@media(max-height:720px){
+  .shell{gap:7px}
+  .stage{min-height:220px}
+  .zen-circle{width:145px;height:145px}
+  .zc-ring{inset:-27px}
+  .shell>.card:last-of-type{padding:9px 10px;gap:6px}
+  .chip,.tchip{min-height:27px}
+  .btn{min-height:38px}
+}
+
+</style>
 </head>
 <body>
 <div class="shell">
@@ -251,9 +394,9 @@
       </div>
     </div>
     <div class="acts">
-      <button class="btn btn-p" id="startBtn">▶ Start</button>
-      <button class="btn"       id="stopBtn"  disabled>■ Stop</button>
-      <button class="btn btn-g" id="sndBtn">♪ Sound</button>
+      <button class="btn btn-p" id="startBtn">Start</button>
+      <button class="btn"       id="stopBtn"  disabled>Stop</button>
+      <button class="btn btn-g" id="sndBtn">Sound</button>
     </div>
   </div>
 
@@ -268,9 +411,9 @@ const PATS = {
 };
 
 const PHASE_C = {
-  Inhale: { c1:"#78F0FF", c2:"#C38CFF", g:"rgba(120,240,255,0.25)" },
-  Hold:   { c1:"#C38CFF", c2:"#9B6FFF", g:"rgba(195,140,255,0.20)" },
-  Exhale: { c1:"#86E89C", c2:"#2DBB85", g:"rgba(134,232,156,0.20)" },
+  Inhale: { c1:"#54D9FF", c2:"#7A72FF", g:"rgba(84,217,255,0.22)" },
+  Hold:   { c1:"#8B5CFF", c2:"#B35CFF", g:"rgba(139,92,255,0.20)" },
+  Exhale: { c1:"#B76CFF", c2:"#D05CFF", g:"rgba(183,108,255,0.18)" },
 };
 
 // Circle refs
@@ -300,6 +443,32 @@ let phaseIdx = 0;
 let phaseTO  = null;
 let countTO  = null;
 let sessTO   = null;
+let sessTick = null;
+let sessEndsAt = 0;
+
+function fmtSess(sec){
+  const s = Math.max(0, Math.ceil(sec));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${String(m).padStart(2,"0")}:${String(r).padStart(2,"0")}`;
+}
+function stopSessCountdown(){
+  if (sessTick) clearInterval(sessTick);
+  sessTick = null;
+  sessEndsAt = 0;
+}
+function startSessCountdown(){
+  stopSessCountdown();
+  if (timerSec <= 0){ timChip.textContent = "∞"; return; }
+  sessEndsAt = Date.now() + timerSec * 1000;
+  const tick = () => {
+    const left = (sessEndsAt - Date.now()) / 1000;
+    timChip.textContent = fmtSess(left);
+    if (left <= 0) stopSessCountdown();
+  };
+  tick();
+  sessTick = setInterval(tick, 250);
+}
 
 // ── THEME ─────────────────────────────────────────────────────────────────
 function setTheme(phaseName) {
@@ -362,8 +531,10 @@ function runPhase() {
 function startSess() {
   running  = true;
   phaseIdx = 0;
-  startBtn.disabled = true;
-  stopBtn.disabled  = false;
+  startBtn.disabled = false;
+  stopBtn.disabled  = true;
+  startBtn.textContent = "Start";
+  startBtn.textContent = "Stop";
   bdot.classList.add("on");
   patChip.classList.add("live");
   resetSquare();
@@ -371,14 +542,17 @@ function startSess() {
 
   clearTimeout(sessTO);
   if (timerSec > 0) {
-    timChip.textContent = Math.round(timerSec/60)+" min";
+    startSessCountdown();
     sessTO = setTimeout(() => stopSess(true), timerSec*1000);
+  } else {
+    stopSessCountdown();
+    timChip.textContent = "∞";
   }
 }
 
 function stopSess(fromTimer) {
   running = false;
-  clearTimeout(phaseTO); clearTimeout(sessTO); clearInterval(countTO);
+  clearTimeout(phaseTO); clearTimeout(sessTO); clearInterval(countTO); stopSessCountdown();
   startBtn.disabled = false;
   stopBtn.disabled  = true;
   bdot.classList.remove("on");
@@ -387,6 +561,7 @@ function stopSess(fromTimer) {
   sqCount.textContent = "—";
   resetSquare();
   if (audioOn) fadeGain(0, 0.4);
+  timChip.textContent = timerSec > 0 ? Math.round(timerSec/60)+" min" : "∞";
 }
 
 // ── AUDIO ─────────────────────────────────────────────────────────────────
@@ -464,6 +639,7 @@ function updateFill() {
 
 // ── EVENTS ────────────────────────────────────────────────────────────────
 startBtn.addEventListener("click", async () => {
+  if (running) { stopSess(false); return; }
   initAudio();
   if (actx.state === "suspended") await actx.resume();
   if (audioOn) fadeGain(parseFloat(volEl.value), 0.18);
@@ -477,7 +653,7 @@ sndBtn.addEventListener("click", async () => {
   if (actx.state === "suspended") await actx.resume();
   audioOn = !audioOn;
   sndBtn.classList.toggle("son", audioOn);
-  sndBtn.textContent = audioOn ? "♪ On" : "♪ Sound";
+  sndBtn.textContent = audioOn ? "Sound On" : "Sound";
   fadeGain(audioOn ? parseFloat(volEl.value) : 0, 0.18);
   if (audioOn) applySound();
 });
